@@ -11,20 +11,20 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/incepteztechnologies/samplerepo2.git'
+                    url: 'https://github.com/incepteztechnologies/de2025.git'
             }
         }
 
         stage('Upload to GCS') {
             steps {
                 // Use the service account key stored in Jenkins credentials
-                withCredentials([file(credentialsId: 'deai-project-id', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                withCredentials([file(credentialsId: 'deai-sa-json', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
                     bat """
                         REM Add gcloud to PATH
                         set PATH=${GCLOUD_BIN};%PATH%
 
                         REM Upload all files from workspace to GCS using service account
-                        "%GCLOUD_BIN%\\gsutil.cmd" -o "Credentials:gs_service_key_file=%GOOGLE_APPLICATION_CREDENTIALS%" cp -r * gs://%BUCKET_NAME%/
+                        "%GCLOUD_BIN%\\gsutil.cmd" -o "Credentials:gs_service_key_file=%GOOGLE_APPLICATION_CREDENTIALS%" cp -r *.py gs://%BUCKET_NAME%/
                     """
                 }
             }
